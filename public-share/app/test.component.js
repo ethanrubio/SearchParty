@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'ng2-material/all', 'angular2/router', './chat.service', './scrollglue.component', 'moment'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', './chat.service', './scrollglue.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,16 +10,13 @@ System.register(['angular2/core', 'ng2-material/all', 'angular2/router', './chat
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, all_1, router_1, chat_service_1, core_2, scrollglue_component_1, moment;
-    var ChatComponent;
+    var core_1, router_1, chat_service_1, core_2, scrollglue_component_1;
+    var ScrollGlueComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
                 core_2 = core_1_1;
-            },
-            function (all_1_1) {
-                all_1 = all_1_1;
             },
             function (router_1_1) {
                 router_1 = router_1_1;
@@ -29,20 +26,22 @@ System.register(['angular2/core', 'ng2-material/all', 'angular2/router', './chat
             },
             function (scrollglue_component_1_1) {
                 scrollglue_component_1 = scrollglue_component_1_1;
-            },
-            function (moment_1) {
-                moment = moment_1;
             }],
         execute: function() {
-            ChatComponent = (function () {
-                function ChatComponent(_chatService, _params) {
+            ScrollGlueComponent = (function () {
+                function ScrollGlueComponent(_chatService, _params) {
                     var _this = this;
                     this._chatService = _chatService;
                     this._params = _params;
+                    this.listItems = [];
+                    this.count = 100;
                     this.nameAdded = false;
                     this.ADD_MESSAGE_URL = 'http://localhost:8000/addChatMessage';
                     this.GET_MESSAGES_URL = 'http://localhost:8000/getChatMessages';
                     this.scroll = scrollglue_component_1.ScrollGlue;
+                    for (var i = 0; i < this.count; i++) {
+                        this.listItems.push("Item number " + i);
+                    }
                     this.huntID = _params.get('huntID');
                     var socket = io.connect('http://localhost:8000');
                     this.typing = false;
@@ -78,68 +77,32 @@ System.register(['angular2/core', 'ng2-material/all', 'angular2/router', './chat
                         _this.zone.run(function () {
                             console.log('messages from DB', messagesFromDB);
                             var messagesArray = messagesFromDB.chatMessages;
-                            for (var i = 0; i < messagesArray.length; i++) {
-                                var datetime = moment.unix(messagesArray[i].datetime).fromNow();
+                            for (var i_1 = 0; i_1 < messagesArray.length; i_1++) {
+                                var datetime = moment.unix(messagesArray[i_1].datetime).fromNow();
                                 console.log('THIS IS BEING PUSHED TO MESSAGES ARRAY');
-                                console.log(messagesArray[i].username, messagesArray[i].text, datetime);
-                                _this.messages.push([messagesArray[i].username, messagesArray[i].text, datetime]);
+                                console.log(messagesArray[i_1].username, messagesArray[i_1].text, datetime);
+                                _this.messages.push([messagesArray[i_1].username, messagesArray[i_1].text, datetime]);
                             }
                         });
                     }).catch(function (error) { return console.error(error); });
                 }
-                ChatComponent.prototype.getUsername = function (username) {
-                    this.username = username;
-                    this.nameAdded = true;
+                ScrollGlueComponent.prototype.addItem = function () {
+                    this.listItems.push("Item number " + this.count++);
                 };
-                ChatComponent.prototype.invocation = function () {
-                    var _this = this;
-                    this.timeout = setTimeout(function () {
-                        _this.socket.emit('typing', false, _this.username, _this.huntID);
-                    }, 1000);
-                };
-                ChatComponent.prototype.OnKey = function (event) {
-                    if (event) {
-                        this.socket.emit('typing', true, this.username, this.huntID);
-                        clearTimeout(this.timeout);
-                        this.invocation();
-                    }
-                };
-                ;
-                ChatComponent.prototype.send = function (message) {
-                    var _this = this;
-                    if (message && message !== '') {
-                        clearTimeout(this.timeout);
-                        this.socket.emit('typing', false, this.username, this.huntID);
-                        var messageObject = {
-                            username: this.username,
-                            huntID: this.huntID,
-                            message: message
-                        };
-                        this._chatService.postData(JSON.stringify(messageObject), this.ADD_MESSAGE_URL)
-                            .then(function (messageAdded) {
-                            messageAdded = messageAdded[0];
-                            console.log('message  added', messageAdded);
-                            _this.socket.emit('chat_message', messageAdded.text, messageAdded.username, messageAdded.datetime, _this.huntID);
-                        }).catch(function (error) {
-                            console.error(error);
-                        });
-                    }
-                    this.chatBox = '';
-                };
-                ChatComponent = __decorate([
+                ScrollGlueComponent = __decorate([
                     core_1.Component({
-                        selector: 'my-chat',
-                        templateUrl: './share/app/chat.component.html',
-                        styleUrls: ['./share/app/chat.component.css'],
-                        directives: [all_1.MATERIAL_DIRECTIVES, scrollglue_component_1.ScrollGlue],
-                        providers: [all_1.MATERIAL_PROVIDERS, chat_service_1.ChatService]
+                        selector: 'my-test',
+                        providers: [chat_service_1.ChatService],
+                        styles: ["\n    .demo-scroll-area {\n      width: 200px;\n      height: 300px;\n      background: rgb(212, 176, 161);\n      overflow-y: scroll;\n    }\n    li {\n      padding-top: 20px;\n      padding-bottom: 20px;\n    }\n    li:hover {\n      background: rgb(182, 150, 136);\n    }\n  "],
+                        template: "\n      \n      <h3> Flesh Coloured Demo List</h3>\n      <button (click)=\"addItem()\">Add Item</button>\n      <div class=\"demo-scroll-area\" scroll-glue>\n        <ul>\n          <li *ngFor=\"#list of listItems\">\n          {{list}}\n          </li>\n          <li *ngFor=\"#message of messages\">\n            {{message[0]}}{{message[1]}}\n          </li>\n        </ul>\n      </div>",
+                        directives: [scrollglue_component_1.ScrollGlue]
                     }), 
                     __metadata('design:paramtypes', [chat_service_1.ChatService, router_1.RouteParams])
-                ], ChatComponent);
-                return ChatComponent;
+                ], ScrollGlueComponent);
+                return ScrollGlueComponent;
             }());
-            exports_1("ChatComponent", ChatComponent);
+            exports_1("ScrollGlueComponent", ScrollGlueComponent);
         }
     }
 });
-//# sourceMappingURL=chat.component.js.map
+//# sourceMappingURL=test.component.js.map

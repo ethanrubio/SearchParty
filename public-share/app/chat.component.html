@@ -1,15 +1,16 @@
-<div class="chatStart" *ngIf="!nameAdded" layout="column" >
+<!--<div class="chatStart" *ngIf="!nameAdded" layout="column" >
   <strong class="prompt" flex="5">Enter your name to start chatting</strong>
   <input  #username placeholder="name" flex="5">
   <button class="userNameBtn" flex="5" (click)="getUsername(username.value)">Enter Chat</button>
 </div>
 
 <div class="mainChat" *ngIf="nameAdded" layout="column">
--
-   <div class="chatMessMaster" layout="column">
+   {{ scroll | json}}
+   <div class="chatMessMaster" layout="column" scroll-glue>
     <div class="chatGifContainer">
       <img class="chatGif" src="share/assets/ellipsis.gif">
     </div>
+      
       <div *ngFor="#message of messages" class=chatMess>
          <p><strong>{{message[0]}}:</strong> {{message[1]}}</p>
          <p><strong>{{message[2]}}</strong></p>
@@ -22,4 +23,13 @@
       <button class="sendMsg" (click)="send(chatBox)" (ngSubmit)="send(chatBox)">Send</button>
     </form>
 
-</div>
+</div>-->
+      <h3> Flesh Coloured Demo List</h3>
+      <button (click)="addItem()">Add Item</button>
+      <div class="demo-scroll-area" scroll-glue>
+        <ul>
+          <li *ngFor="#item of listItems">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
