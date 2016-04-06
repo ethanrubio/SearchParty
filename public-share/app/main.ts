@@ -16,6 +16,6 @@ import {enableProdMode} from 'angular2/core';
 enableProdMode();
 
 bootstrap(AppComponent, [[
-  ROUTER_PROVIDERS, // includes binding to PathLocationStrategy
+  ROUTER_PROVIDERS, 
   provide(LocationStrategy, {useClass: HashLocationStrategy})
 ]]);

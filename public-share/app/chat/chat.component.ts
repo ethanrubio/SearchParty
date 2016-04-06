@@ -1,19 +1,14 @@
 import {Component, OnInit, ElementRef} from 'angular2/core';
-import {MATERIAL_DIRECTIVES, MdDialog, MATERIAL_PROVIDERS} from 'ng2-material/all';
-import {DOM} from "angular2/src/platform/dom/dom_adapter";
-import {MdDialogConfig, MdDialogBasic, MdDialogRef} from "ng2-material/components/dialog/dialog";
-import {Media} from "ng2-material/core/util/media";
+import {MATERIAL_DIRECTIVES, MATERIAL_PROVIDERS} from 'ng2-material/all';
 import {RouteParams} from 'angular2/router';
 import {ChatService} from './chat-service';
 import {NgZone} from "angular2/core";
 import * as moment from 'moment';
-import {FromUnixPipe} from './format-unix.pipe';
 
 @Component({
   selector: 'my-chat',
-  templateUrl: './share/app/chat.component.html',
-  styleUrls: ['./share/app/chat.component.css'],
-  pipes: [FromUnixPipe],
+  templateUrl: './share/app/chat/chat.component.html',
+  styleUrls: ['./share/app/chat/chat.component.css'],
   directives: [MATERIAL_DIRECTIVES],
   providers: [MATERIAL_PROVIDERS, ChatService]
 })
@@ -56,12 +51,18 @@ export class ChatComponent {
     this._chatService.getMessages()
       .then(messages => {
         console.log('this is the data from _chatService getmessages ', messages);
-        this.messages = messages
+        this.messages = messages;
       })
       .catch(error => console.log('there was an error ', error));
   }
 
-  OnKey(event: KeyboardEvent) {
+  OnKey(event: KeyboardEvent, msg) {
+    console.log("typing!")
+    if(event.keyCode === 13){
+      console.log("enter key hit");
+      console.log("msg = ", msg);
+      this.send(msg);
+    }
     if (event) {
       this._chatService.userIsTyping();
     }

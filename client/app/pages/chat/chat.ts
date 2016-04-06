@@ -1,21 +1,15 @@
 import {Page, NavController, NavParams, LocalStorage} from 'ionic-angular';
-import {Http, Headers} from 'angular2/http';
 import {FORM_DIRECTIVES} from 'angular2/common';
 import {JwtHelper} from 'angular2-jwt';
-import {ConnectionBackend, HTTP_PROVIDERS} from 'angular2/http';
 import {AuthService} from '../../services/auth/auth-service'
 import {ChatService} from '../../services/chat/chat-service';
 import * as moment from 'moment';
-import {FromUnixPipe} from '../../util/format-unix-pipe';
 
 @Page({
   templateUrl: 'build/pages/chat/chat.html',
   providers: [
-    ConnectionBackend,
-    HTTP_PROVIDERS,
     ChatService
   ],
-  pipes [FromUnixPipe],
   directives: [FORM_DIRECTIVES]
 })
 export class Chat {
@@ -33,7 +27,6 @@ export class Chat {
   otherUsername: any;
 
    constructor(
-      private http: Http,
       private nav: NavController,
       navParams: NavParams,
       private _chatService: ChatService

@@ -3,13 +3,14 @@ import {Http} from 'angular2/http';
 import {provide} from 'angular2/core';
 import {AuthHttp, AuthConfig} from 'angular2-jwt';
 import {AuthService} from './services/auth/auth-service';
+import {UrlService} from './services/url/url-service';
+import {APIService} from './services/api/api-service';
+import {GoogleMapService} from './services/map/map-service';
 import {LogIn} from './pages/users/log-in';
 import {TemplatePage} from './pages/templates/templates';
 import {TaskPage} from './pages/tasks/tasks';
 import {ProfilePage} from './pages/profile/profile';
-import {Chat} from './pages/chat/chat';
 import {enableProdMode} from 'angular2/core';
-import {UrlService} from './services/url/url-service';
 
 enableProdMode();
 
@@ -20,17 +21,18 @@ import * as _ from 'underscore';
   config: {}, // http://ionicframework.com/docs/v2/api/config/Config/
   providers: [
     provide(AuthHttp, {
-      useFactory: (http) => {
+      useFactory: http => {
         return new AuthHttp(new AuthConfig, http);
       },
       deps: [Http]
     }),
     UrlService,
-    AuthService
+    AuthService,
+    APIService,
+    GoogleMapService
   ]
 })
 export class MyApp {
-  // make HelloIonicPage the root (or first) page
   rootPage: any = LogIn;
   pages: Array<{title: string, component: any}>;
   unauthPages: Array<{title: string, component: any}>;

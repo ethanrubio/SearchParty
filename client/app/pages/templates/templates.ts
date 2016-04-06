@@ -10,7 +10,7 @@ import {TemplateService} from '../../services/template/template-service';
 export class TemplatePage {
   selectedItem: any;
   testData: Array<{type: string, huntname: string, image: string, icon: string}>;
-  items: Array<{title: string, image: string, huntname: string, icon: string}>;
+  items: Array<{title: string, image: string, huntname: string, icon: string, keywords: Array<[{}]>}>;
   local: Storage = new Storage(LocalStorage);
   loadComplete: boolean;
   loadingImg: any;
@@ -18,8 +18,13 @@ export class TemplatePage {
   userLat: number;
   userInfo: {};
   geolocation: {};
+  templates: any;
 
-  constructor(private nav: NavController, navParams: NavParams, private templateService: TemplateService) {
+  constructor(
+    private nav: NavController, 
+    navParams: NavParams, 
+    private _templateService: TemplateService
+    ) {
     this.selectedItem = navParams.get('item');
 
     this.loadingImg = 'img/poi.gif';
@@ -39,29 +44,39 @@ export class TemplatePage {
       }
     }
 
-    this.testData = [
-      {type: 'Bar', huntname: 'Bar Hunt', image: 'img/bar.jpg', icon: 'ios-pint'},
-      {type: 'Beach', huntname: 'Beach Hunt', image: 'img/beach.jpg', icon: 'ios-water'},
-      {type: 'Brunch', huntname: 'Brunch Hunt', image: 'img/brunch.jpg', icon: 'ios-restaurant'},
-      {type: 'Coffee', huntname: 'Coffee Hunt', image: 'img/coffee.jpg', icon: 'cafe'},
-      {type: 'Park', huntname: 'Park Hunt', image: 'img/park.jpg', icon: 'leaf'},
-      {type: 'Ramen', huntname: 'Ramen Hunt', image: 'img/ramen.jpg', icon: 'ios-egg'}
-      ];
+    // this.testData = [
+    //   {type: 'Bar', huntname: 'Bar Hunt', image: 'img/bar.jpg', icon: 'ios-pint'},
+    //   {type: 'Beach', huntname: 'Beach Hunt', image: 'img/beach.jpg', icon: 'ios-water'},
+    //   {type: 'Brunch', huntname: 'Brunch Hunt', image: 'img/brunch.jpg', icon: 'ios-restaurant'},
+    //   {type: 'Coffee', huntname: 'Coffee Hunt', image: 'img/coffee.jpg', icon: 'cafe'},
+    //   {type: 'Park', huntname: 'Park Hunt', image: 'img/park.jpg', icon: 'leaf'},
+    //   {type: 'Ramen', huntname: 'Ramen Hunt', image: 'img/ramen.jpg', icon: 'ios-egg'}
+    // ];
 
     this.items = [];
-    for (let hunt of this.testData) {
-      this.items.push({
-        title: hunt.type,
-        image: hunt.image,
-        huntname: hunt.huntname,
-        icon: hunt.icon
-      });
-    }
-  }
-  navCreateHunt(event, item) {
-    console.log(item.title);
-    this.nav.setRoot(CreateHuntPage, {
-      title: item.title
+
+    this._templateService.getData()
+    .then(templates => {
+      console.log("Templates", templates);
+      this.templates = templates;
+      for (let hunt of this.templates) {
+        console.log("hunt", hunt);
+        this.items.push({
+          title: hunt.template.type,
+          image: hunt.template.image,
+          huntname: hunt.template.huntname,
+          icon: hunt.template.icon,
+          keywords: hunt.keywords
+        })
+      }
     });
-   }
   }
+  
+  navCreateHunt(event, item) {
+    console.log(item.huntname);
+    this.nav.setRoot(CreateHuntPage, {
+      templateName: item.huntname,
+      keywordsArray: item.keywords
+    });
+  }
+}

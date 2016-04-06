@@ -1,6 +1,6 @@
 import {Injectable, Output, Input, EventEmitter} from 'angular2/core';
-import {APIService} from './api-service';
-import {GoogleMapService} from './map-service';
+import {APIService} from '../shared/api-service';
+import {GoogleMapService} from '../map/map-service';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -63,6 +63,6 @@ export class SearchPartyService {
         console.log('total dist to be emitted ', this.totalDist);
         this.totalDistChange.emit(this.totalDist);
       }
-    }, 2000);    
+    }, 2500);    
   }  
 }  

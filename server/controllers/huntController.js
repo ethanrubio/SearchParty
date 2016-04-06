@@ -20,10 +20,12 @@ module.exports = {
     let huntName = req.body.huntName;
     let previousPlaces = req.body.previousPlaces;
     let previousTasks = req.body.previousTasks;
+    let taskNumber = req.body.taskNumber;
+    let templateName = req.body.templateName;
     let huntData;
     console.log("+++++before if/else statement", huntID);
     if(!huntID) {
-      createNewHunt.initializeHunt(username, huntName)
+      createNewHunt.initializeHunt(username, huntName, taskNumber, templateName)
       .then(hunt => {
         console.log("inside initalizeHunt", hunt);
         makeHunt.createHunt(keyword, previousPlaces, previousTasks, hunt[0].huntID, geolocation, hunt[0].huntname)
@@ -36,7 +38,7 @@ module.exports = {
         .catch(error => console.error(error));
     } else {
       console.log('this is the huntID in the else statement ', geolocation);
-      makeHunt.createHunt(keyword, previousPlaces, previousTasks, huntID, geolocation, huntName)
+      makeHunt.createHunt(keyword, previousPlaces, previousTasks, huntID, geolocation, huntName, taskNumber)
         .then(resultsObj => {
           res.json(resultsObj);
         })
@@ -95,13 +97,22 @@ module.exports = {
      .catch(error => console.error(error));
    },
 
-   getTemplateKeywords: (req, res) => {
-     let templateTitle = req.body.templateTitle;
-
-     template.retrieveTemplate(templateTitle)
+   retrieveTemplates: (req, res) => {
+     template.retrieveAllTemplates()
      .then(templateObject => {
        console.log("template object", templateObject);
        res.json(templateObject);
+     })
+     .catch(error => console.error(error));
+   },
+   
+   retrieveSingleTemplate: (req, res) => {
+     let templateTitle = req.body.templateName;
+     
+     template.retrieveSingleTemplate(templateTitle)
+     .then(templateObject => {
+       console.log('template object', templateObject);
+       res.json(templateObject[0]);
      })
      .catch(error => console.error(error));
    }
